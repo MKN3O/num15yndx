@@ -1,8 +1,9 @@
 import sys, time
 
+import sqlite3
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 
 
 class BogomolBankBegin(QDialog):  # Стартовая страница
@@ -41,7 +42,23 @@ class BogomolBankAdmin(QDialog):
     def __init__(self):
         super().__init__()
         uic.loadUi('AdminPage.ui', self)
+        self.userInfo.clicked.connect(self.uinfo)
+        self.connection = sqlite3.connect("bank_db.sqlite")
 
+    def uinfo(self):
+        res = self.connection.cursor().execute("""SELECT * FROM users""").fetchall()
+        self.tableWidget.setColumnCount(6)
+        self.tableWidget.setRowCount(0)
+        self.tableWidget.setHorizontalHeaderLabels(['id', 'ФИО', 'Дата рождения',
+                                                  'Серия и номер паспорта', 'id кредита', 'id вклада'])
+        # Заполняем таблицу элементами
+        for i, row in enumerate(res):
+            self.tableWidget.setRowCount(
+                self.tableWidget.rowCount() + 1)
+            for j, elem in enumerate(row):
+                self.tableWidget.setItem(
+                    i, j, QTableWidgetItem(str(elem)))
+        self.tableWidget.resizeColumnsToContents()
 
 
 if __name__ == '__main__':
