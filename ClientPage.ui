@@ -55,20 +55,13 @@
     </item>
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QPushButton" name="creditbutton">
-        <property name="text">
-         <string>Оформить кредит</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QTableWidget" name="tableWidget"/>
       </item>
       <item row="2" column="0">
        <widget class="QPushButton" name="accountbutton">
         <property name="text">
-         <string>Личный кабинет</string>
+         <string>Личные данные</string>
         </property>
        </widget>
       </item>
@@ -79,10 +72,31 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="6" column="0">
        <widget class="QPushButton" name="changeinfo">
         <property name="text">
          <string>Изменить информацию о себе</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="creditbutton">
+        <property name="text">
+         <string>Оформить кредит</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="creditList">
+        <property name="text">
+         <string>Ваши кредиты</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="depositList">
+        <property name="text">
+         <string>Ваши вклады</string>
         </property>
        </widget>
       </item>
