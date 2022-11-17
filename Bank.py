@@ -46,8 +46,20 @@ class BogomolBankAdmin(QDialog):
         uic.loadUi('AdminPage.ui', self)
         self.userInfo.clicked.connect(self.uinfo)
         self.connection = sqlite3.connect("bank_db.sqlite")
+        res = self.connection.cursor().execute("""SELECT summa FROM credits""").fetchall()
+        res1 = self.connection.cursor().execute("""SELECT summa FROM deposits""").fetchall()
+        dps = 0
+        crs = 0
+        for i in res:
+            for j in i:
+                dps += float(j)
+        for i in res1:
+            for j in i:
+                crs += float(j)
         self.creditList.clicked.connect(self.crinfo)
         self.depositList.clicked.connect(self.dpinfo)
+        self.depositSum.setText(f'{str(dps)} - сумма депозитов')
+        self.creditSum.setText(f'{str(crs)} - сумма кредитов')
 
     def uinfo(self):
         res = self.connection.cursor().execute("""SELECT * FROM users""").fetchall()
@@ -123,11 +135,17 @@ class BogomolBankClient(QDialog):
         self.depositbutton.clicked.connect(self.deposit_making)
         self.creditList.clicked.connect(self.creditlst)
         self.depositList.clicked.connect(self.depositlst)
+        self.tableWidget.itemChanged.connect(self.chgn)
+        self.clmns = {1: 'UserName', 2: 'birthdate', 3: 'passportns'}
+        con = sqlite3.connect("bank_db.sqlite")
+        self.id = con.cursor().execute(f"""SELECT id FROM users
+                                      WHERE username = '{self.name}'""").fetchall()[0][0]
 
     def account(self):
+        self.changeable = True
         con = sqlite3.connect("bank_db.sqlite")
         res = con.cursor().execute(f"""SELECT * FROM users
-                                      WHERE username = '{self.name}'""").fetchall()
+                                      WHERE id = '{self.id}'""").fetchall()
 
         self.tableWidget.setColumnCount(6)
         self.tableWidget.setRowCount(0)
@@ -151,11 +169,11 @@ class BogomolBankClient(QDialog):
         self.hide()
 
     def creditlst(self):
+        self.changeable = False
         con = sqlite3.connect("bank_db.sqlite")
         res = con.cursor().execute(f"""SELECT * FROM credits
-                                            WHERE user_id in 
-                                            (SELECT id FROM users
-                                            WHERE username = '{self.name}')""").fetchall()
+                                            WHERE user_id =
+                                            '{self.id}'""").fetchall()
         self.tableWidget.setColumnCount(6)
         self.tableWidget.setRowCount(0)
         self.tableWidget.setHorizontalHeaderLabels(['id', 'ваш id', 'Дата начала', 'Сумма, рублей',
@@ -169,11 +187,11 @@ class BogomolBankClient(QDialog):
         self.tableWidget.resizeColumnsToContents()
 
     def depositlst(self):
+        self.changeable = False
         con = sqlite3.connect("bank_db.sqlite")
         res = con.cursor().execute(f"""SELECT * FROM deposits
-                                                    WHERE user_id in 
-                                                    (SELECT id FROM users
-                                                    WHERE username = '{self.name}')""").fetchall()
+                                                    WHERE user_id =
+                                                    '{self.id}'""").fetchall()
         self.tableWidget.setColumnCount(6)
         self.tableWidget.setRowCount(0)
         self.tableWidget.setHorizontalHeaderLabels(['id', 'ваш id', 'Дата начала', 'Сумма, рублей',
@@ -185,6 +203,17 @@ class BogomolBankClient(QDialog):
                 self.tableWidget.setItem(
                     i, j, QTableWidgetItem(str(elem)))
         self.tableWidget.resizeColumnsToContents()
+
+
+    def chgn(self, item):
+        if int(item.column()) != 5 and int(item.column()) != 4 and int(item.column()) != 0 and self.changeable:
+            con = sqlite3.connect("bank_db.sqlite")
+            con.cursor().execute(f"""UPDATE users
+                                  SET {self.clmns[item.column()]} = '{str(item.text())}'
+                                  WHERE id = '{self.id}'""")
+            if item.column() == 1:
+                self.name = item.text()
+            con.commit()
 
 
 class BogomolBankCredit(QDialog):
@@ -203,12 +232,27 @@ class BogomolBankCredit(QDialog):
         percent = 10
         cur.execute(f"""INSERT INTO credits(user_id,startdate,summa,percent,years)
         VALUES('{res}','{data}','{self.sumline.text()}','{percent}', '{self.lengthline.text()}')""")
+        cur.execute(f"""UPDATE users SET creditid = 'Yes' WHERE username = '{self.name}'""")
         con.commit()
 
 class BogomolBankDeposit(QDialog):
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
         uic.loadUi('DepositPage.ui', self)
+        self.pushButton.clicked.connect(self.deposit_save)
+        self.name = name
+
+    def deposit_save(self):
+        con = sqlite3.connect("bank_db.sqlite")
+        res = con.cursor().execute(f"""SELECT id FROM users
+                                           WHERE username = '{self.name}'""").fetchall()[0][0]
+        cur = con.cursor()
+        data = datetime.date.today().strftime(('%d.%m.%Y'))
+        percent = 7
+        cur.execute(f"""INSERT INTO deposits(user_id,startdate,summa,percent,years)
+                VALUES('{res}','{data}','{self.sumline.text()}','{percent}', '{self.lengthline.text()}')""")
+        cur.execute(f"""UPDATE users SET depositid = 'Yes' WHERE username = '{self.name}'""")
+        con.commit()
 
 
 
