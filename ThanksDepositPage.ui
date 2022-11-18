@@ -72,12 +72,12 @@
     <item row="2" column="0">
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Срок кредита (лет)</string>
+       <string>Срок вклада (лет)</string>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="creditline"/>
+     <widget class="QLineEdit" name="depositline"/>
     </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_5">
@@ -87,7 +87,7 @@
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="debtline"/>
+     <widget class="QLineEdit" name="profitline"/>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_6">
@@ -101,7 +101,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="backbutton">
    <property name="geometry">
     <rect>
      <x>335</x>
