@@ -59,18 +59,15 @@
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="sumline"/>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="debtline"/>
-    </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
        <string>Сумма кредита</string>
       </property>
      </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="sumline"/>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_4">
@@ -79,12 +76,18 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="creditline"/>
+    </item>
     <item row="3" column="0">
      <widget class="QLabel" name="label_5">
       <property name="text">
        <string>Общая задолженность</string>
       </property>
      </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="debtline"/>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_6">
@@ -93,13 +96,23 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="creditline"/>
-    </item>
     <item row="4" column="1">
      <widget class="QLineEdit" name="lineEdit_4"/>
     </item>
    </layout>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>335</x>
+     <y>347</y>
+     <width>391</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Вернуться на главную страницу</string>
+   </property>
   </widget>
  </widget>
  <resources/>
