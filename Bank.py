@@ -224,6 +224,8 @@ class BogomolBankCredit(QDialog):
         self.name = name
 
     def credit_save(self):
+        self.sumcredit = str(self.sumline.text())
+        self.longcredit = str(self.lengthline.text())
         con = sqlite3.connect("bank_db.sqlite")
         res = con.cursor().execute(f"""SELECT id FROM users
                                    WHERE username = '{self.name}'""").fetchall()[0][0]
@@ -234,6 +236,9 @@ class BogomolBankCredit(QDialog):
         VALUES('{res}','{data}','{self.sumline.text()}','{percent}', '{self.lengthline.text()}')""")
         cur.execute(f"""UPDATE users SET creditid = 'Yes' WHERE username = '{self.name}'""")
         con.commit()
+        self.thankscredit = BogomolBankThanksCredit(self.sumcredit, self.longcredit)
+        self.thankscredit.show()
+        self.hide()
 
 class BogomolBankDeposit(QDialog):
     def __init__(self, name):
@@ -243,6 +248,8 @@ class BogomolBankDeposit(QDialog):
         self.name = name
 
     def deposit_save(self):
+        self.sumdeposit = str(self.sumline.text())
+        self.longdeposit = str(self.lengthline.text())
         con = sqlite3.connect("bank_db.sqlite")
         res = con.cursor().execute(f"""SELECT id FROM users
                                            WHERE username = '{self.name}'""").fetchall()[0][0]
@@ -253,7 +260,48 @@ class BogomolBankDeposit(QDialog):
                 VALUES('{res}','{data}','{self.sumline.text()}','{percent}', '{self.lengthline.text()}')""")
         cur.execute(f"""UPDATE users SET depositid = 'Yes' WHERE username = '{self.name}'""")
         con.commit()
+        self.thanksdeposit = BogomolBankThanksDeposit(self.sumdeposit, self.longdeposit)
+        self.thanksdeposit.show()
+        self.hide()
 
+
+class BogomolBankThanksCredit(QDialog):
+    def __init__(self, sumcredit, longcredit):
+        super().__init__()
+        uic.loadUi('ThanksCreditPage.ui', self)
+        self.finalsum = sumcredit
+        self.finallong = longcredit
+        debt = round((int(sumcredit) * (1.1 ** int(longcredit))))
+        monthly = debt // (int(longcredit) * 12)
+        self.summaline.setText(str(self.finalsum))
+        self.longline.setText(str(self.finallong))
+        self.debtline.setText(str(debt))
+        self.monthpayline.setText(str(monthly))
+        self.acceptButton.clicked.connect(self.turnback)
+
+    def turnback(self):
+        self.turningback = BogomolBankRegister()
+        self.turningback.show()
+
+
+
+class BogomolBankThanksDeposit(QDialog):
+    def __init__(self, sumdeposit, longdeposit):
+        super().__init__()
+        uic.loadUi('ThanksDepositPage.ui', self)
+        self.finalsum = sumdeposit
+        self.finallong = longdeposit
+        profit = round((int(sumdeposit) * (1.07 ** int(longdeposit))))
+        monthly = profit // (int(longdeposit) * 12)
+        self.summaline.setText(str(self.finalsum))
+        self.longline.setText(str(self.finallong))
+        self.profitline.setText(str(profit))
+        self.monthprofitline.setText(str(monthly))
+        self.backbutton.clicked.connect(self.turnback)
+
+    def turnback(self):
+        self.turningback = BogomolBankRegister()
+        self.turningback.show()
 
 
 if __name__ == '__main__':
